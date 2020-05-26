@@ -1024,10 +1024,7 @@ class ModelAdmin(BaseModelAdmin):
             orm_lookups = [construct_search(str(search_field))
                            for search_field in search_fields]
 
-            # Split search term in phrases (surrounded with double quotes) and words (surrounded with spaces)
-            splited_search_term = shlex.split(search_term)
-
-            for bit in splited_search_term:
+            for bit in shlex.split(search_term):
                 or_queries = [models.Q(**{orm_lookup: bit})
                               for orm_lookup in orm_lookups]
                 queryset = queryset.filter(reduce(operator.or_, or_queries))
