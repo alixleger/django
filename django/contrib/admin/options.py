@@ -2,6 +2,7 @@ import copy
 import json
 import operator
 import re
+import shlex
 from functools import partial, reduce, update_wrapper
 from urllib.parse import quote as urlquote
 
@@ -1024,9 +1025,7 @@ class ModelAdmin(BaseModelAdmin):
                            for search_field in search_fields]
 
             # Split search term in phrases (surrounded with double quotes) and words (surrounded with spaces)
-            splited_search_term = re.split(r'"(.+?)"|(\w+(?=\s|$))', search_term)
-            # Clean result by removing None, empty string and spaces in the list
-            splited_search_term = [item for item in splited_search_term if item and item != ' ']
+            splited_search_term = shlex.split(search_term)
 
             for bit in splited_search_term:
                 or_queries = [models.Q(**{orm_lookup: bit})
