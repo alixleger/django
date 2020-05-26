@@ -1305,6 +1305,16 @@ subclass::
         WHERE (first_name ILIKE '%john%' OR last_name ILIKE '%john%')
         AND (first_name ILIKE '%lennon%' OR last_name ILIKE '%lennon%')
 
+    If you don't want to split your search query into words, you can surround
+    it with double quotes. For example, if a user searches for
+    ``"john winston"``, Django will do now the equivalent of this SQL
+    ``WHERE`` clause:
+
+    .. code-block:: sql
+
+        WHERE first_name ILIKE '%john winston%'
+        OR last_name ILIKE '%john winston%'
+
     If you don't want to use ``icontains`` as the lookup, you can use any
     lookup by appending it the field. For example, you could use :lookup:`exact`
     by setting ``search_fields`` to ``['first_name__exact']``.
