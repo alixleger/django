@@ -3,6 +3,7 @@ import json
 import operator
 import re
 import shlex
+
 from functools import partial, reduce, update_wrapper
 from urllib.parse import quote as urlquote
 

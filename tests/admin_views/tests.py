@@ -3538,6 +3538,12 @@ class AdminSearchTest(TestCase):
 
     def test_double_quotes_search(self):
         response = self.client.get(
+            reverse('admin:admin_views_person_changelist')
+            + '?q="Guido van Rossum" Gui')
+        # confirm the search returned one object
+        self.assertContains(response, "\n1 person\n")
+
+        response = self.client.get(
             reverse('admin:admin_views_recommendation_changelist')
             + '?q="Fow bow"')
         # confirm the search returned one object
