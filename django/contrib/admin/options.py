@@ -1022,7 +1022,13 @@ class ModelAdmin(BaseModelAdmin):
         if search_fields and search_term:
             orm_lookups = [construct_search(str(search_field))
                            for search_field in search_fields]
-            for bit in search_term.split():
+
+            # Split search term in phrases (surrounded with double quotes) and words (surrounded with spaces)
+            splited_search_term = re.split(r'"(.+?)"|(\w+(?=\s|$))', search_term)
+            # Clean result by removing None, empty string and spaces in the list
+            splited_search_term = [item for item in splited_search_term if item and item != ' ']
+
+            for bit in splited_search_term:
                 or_queries = [models.Q(**{orm_lookup: bit})
                               for orm_lookup in orm_lookups]
                 queryset = queryset.filter(reduce(operator.or_, or_queries))
