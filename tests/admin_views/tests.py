@@ -3444,11 +3444,14 @@ class AdminSearchTest(TestCase):
         cls.t2 = Recommendation.objects.create(the_recommender=cls.t1)
         cls.t3 = Recommender.objects.create()
         cls.t4 = Recommendation.objects.create(the_recommender=cls.t3)
+        cls.t5 = Recommender.objects.create()
+        cls.t6 = Recommendation.objects.create(the_recommender=cls.t5)
 
         cls.tt1 = TitleTranslation.objects.create(title=cls.t1, text='Bar')
         cls.tt2 = TitleTranslation.objects.create(title=cls.t2, text='Foo')
         cls.tt3 = TitleTranslation.objects.create(title=cls.t3, text='Few')
         cls.tt4 = TitleTranslation.objects.create(title=cls.t4, text='Bas')
+        cls.tt5 = TitleTranslation.objects.create(title=cls.t6, text='Fow bow')
 
     def setUp(self):
         self.client.force_login(self.superuser)
@@ -3532,6 +3535,18 @@ class AdminSearchTest(TestCase):
             html=True
         )
         self.assertTrue(response.context['cl'].show_admin_actions)
+
+    def test_double_quotes_search(self):
+        response = self.client.get(
+            reverse('admin:admin_views_recommendation_changelist')
+            + '?q="Fow bow"')
+        # confirm the search returned one object
+        self.assertContains(response, "\n1 recommendation\n")
+
+        response = self.client.get(
+            reverse('admin:admin_views_recommendation_changelist') + '?q="Fow bo"')
+        # confirm the search returned zero objects
+        self.assertContains(response, "\n0 recommendations\n")
 
 
 @override_settings(ROOT_URLCONF='admin_views.urls')
